@@ -119,37 +119,6 @@ def shortest_path(source, target):
                 visited.add(cur_id)
 
 
-
-
-def depth_first_search(source, target):
-    queue = QueueFrontier()
-    queue.add(Node(state=(None, source), parent=None))
-
-    visited = set()
-
-    while True:
-        if queue.empty():
-            return None
-
-        cur_movie_id, cur_id = queue.remove()
-        visited.add(cur_id)
-        set_neighbors = neighbors_for_person(cur_id)
-        for movie_id, person_id in set_neighbors:
-            if person_id == target and len(cur_path) < len(best_path):
-                best_path = cur_path    
-            if person_id == target:
-                continue
-            
-            if person_id not in visited:
-                queue.add(person_id)
-
-        if len(set_neighbors - visited) == 0:
-            visited.remove(cur_id)
-            cur_path = cur_path[:-1]
-
-    
-            
-
 def person_id_for_name(name):
     """
     Returns the IMDB id for a person's name,
