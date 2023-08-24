@@ -1,5 +1,5 @@
 class Node:
-    def __init__(self, state, parent, action):
+    def __init__(self, state, parent, action=None):
         self.state = state
         self.parent = parent
         self.action = action
@@ -8,6 +8,7 @@ class Node:
 class StackFrontier:
     def __init__(self):
         self.frontier = []
+        self.track = []
 
     def add(self, node):
         self.frontier.append(node)

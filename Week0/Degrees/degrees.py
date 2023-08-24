@@ -92,34 +92,56 @@ def shortest_path(source, target):
     If no possible path, returns None.
     """
 
-    # TODO
-    raise NotImplementedError
+    queue = QueueFrontier()
+    queue.add(Node(state=(source, None), parent=None))
+    visited = set()
+
+    while True:
+        if queue.empty():
+            return None
+
+        cur_node = queue.remove()
+        queue.track.append(cur_node)
+        cur_id = cur_node.state[0]
+        print(cur_id)
+
+        for movie_id, person_id in neighbors_for_person(cur_id):
+            if person_id == target:
+                path = [(movie_id, person_id)]
+                while cur_node.parent is not None:
+                    path.append(cur_node.state)
+                    cur_node = cur_node.parent
+
+                return path.reverse()
+            
+            if person_id not in visited:
+                queue.add(Node(state=(movie_id, person_id), parent=cur_node))
+                visited.add(cur_id)
+
+
 
 
 def depth_first_search(source, target):
-    stack = StackFrontier()
-    stack.add((None, source))
+    queue = QueueFrontier()
+    queue.add(Node(state=(None, source), parent=None))
 
-    best_path = []
-    cur_path = []
-    visited = { target }
-    should_stop = False
+    visited = set()
 
-    while not should_stop:
-        cur_movie_id, cur_id = stack.remove()
+    while True:
+        if queue.empty():
+            return None
+
+        cur_movie_id, cur_id = queue.remove()
         visited.add(cur_id)
-        cur_path.append((movie_id, person_id))
         set_neighbors = neighbors_for_person(cur_id)
         for movie_id, person_id in set_neighbors:
-            
-
             if person_id == target and len(cur_path) < len(best_path):
                 best_path = cur_path    
             if person_id == target:
                 continue
             
             if person_id not in visited:
-                stack.add(person_id)
+                queue.add(person_id)
 
         if len(set_neighbors - visited) == 0:
             visited.remove(cur_id)
