@@ -69,9 +69,6 @@ def main():
     if target is None:
         sys.exit("Person not found.")
 
-    print(people[source])
-    print(people[target])
-
     path = shortest_path(source, target)
 
     if path is None:
@@ -105,16 +102,16 @@ def shortest_path(source, target):
         cur_node = queue.remove()
         queue.track.append(cur_node)
         cur_id = cur_node.state[1]
-        print(cur_id)
 
         for movie_id, person_id in neighbors_for_person(cur_id):
             if person_id == target:
                 path = [(movie_id, person_id)]
+
                 while cur_node.parent is not None:
                     path.append(cur_node.state)
                     cur_node = cur_node.parent
 
-                return path.reverse()
+                return path[::-1]
             
             if person_id not in visited:
                 queue.add(Node(state=(movie_id, person_id), parent=cur_node))
