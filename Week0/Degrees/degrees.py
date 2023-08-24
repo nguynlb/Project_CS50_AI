@@ -50,7 +50,7 @@ def load_data(directory):
                 movies[row["movie_id"]]["stars"].add(row["person_id"])
             except KeyError:
                 pass
-
+    
 
 def main():
     if len(sys.argv) > 2:
@@ -68,6 +68,9 @@ def main():
     target = person_id_for_name(input("Name: "))
     if target is None:
         sys.exit("Person not found.")
+
+    print(people[source])
+    print(people[target])
 
     path = shortest_path(source, target)
 
@@ -91,10 +94,9 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
-
     queue = QueueFrontier()
-    queue.add(Node(state=(source, None), parent=None))
-    visited = set()
+    queue.add(Node(state=(None, source), parent=None))
+    visited = { source }
 
     while True:
         if queue.empty():
@@ -102,7 +104,7 @@ def shortest_path(source, target):
 
         cur_node = queue.remove()
         queue.track.append(cur_node)
-        cur_id = cur_node.state[0]
+        cur_id = cur_node.state[1]
         print(cur_id)
 
         for movie_id, person_id in neighbors_for_person(cur_id):
@@ -116,7 +118,7 @@ def shortest_path(source, target):
             
             if person_id not in visited:
                 queue.add(Node(state=(movie_id, person_id), parent=cur_node))
-                visited.add(cur_id)
+                visited.add(person_id)
 
 
 def person_id_for_name(name):
