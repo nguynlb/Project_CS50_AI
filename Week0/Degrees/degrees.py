@@ -86,6 +86,7 @@ def main():
 
 def shortest_path(source, target):
     """
+    Algorithm: Use BFS
     Returns the shortest list of (movie_id, person_id) pairs
     that connect the source to the target.
 
