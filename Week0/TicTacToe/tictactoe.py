@@ -79,7 +79,7 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    if winner(board) or _count_none(board) == 0:
+    if winner(board) is not None or _count_none(board) == 0:
         return True
     return False
 
@@ -97,4 +97,28 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    raise NotImplementedError
+    if terminal(board): return None
+
+    def min_max_recursion(board, i, possible_actions):
+        # Check win or draw
+        score = utility(board)
+        if score != 0: return (None, score)
+        # Check draw
+        if _count_none(board) == 0: return (None, 0)
+
+        child_board = []
+        for action in possible_actions:
+            child_board.append((action , min_max_recursion(result(board, action), 
+                                            i + 1, 
+                                            possible_actions.remove(action))[1]))
+        if i % 2 == 0:
+            return max(child_board, key=lambda ele: ele[1])
+        return min(child_board, key=lambda ele: ele[1])
+    
+    possible_actions = actions(board)
+    action , _ = min_max_recursion(board, 0, possible_actions)
+    return action
+
+            
+        
+
