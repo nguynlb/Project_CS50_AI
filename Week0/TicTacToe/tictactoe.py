@@ -66,8 +66,10 @@ def winner(board):
                     (0, 4, 8), 
                     (2, 4, 6)}
     
-    check_line = lambda i, j, k: (board[i // 3][i % 3] == board[j // 3][j % 3] == board[k // 3][k % 3])  \
-                                 and board[i // 3][i % 3] is not None
+    check_line = lambda line: (board[line[0] // 3][line[0] % 3] == 
+                               board[line[1] // 3][line[1] % 3] == 
+                               board[line[2] // 3][line[2] % 3])  \
+                               and board[line[0] // 3][line[0] % 3] is not EMPTY
     for line in possible_win:
         if check_line(line):
             return board[line[0] // 3][line[0] % 3]
