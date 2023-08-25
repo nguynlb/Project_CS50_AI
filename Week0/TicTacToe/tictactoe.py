@@ -3,6 +3,7 @@ Tic Tac Toe Player
 """
 import math
 import copy
+import random
 
 X = "X"
 O = "O"
@@ -94,33 +95,52 @@ def utility(board):
     elif winner(board) == O: return -1
     return 0
 
-
-def minimax(board):
+def minimax(board, bot):
     """
+    minimax algorithm interface
     Returns the optimal action for the current player on the board.
     """
+    # Check end
     if terminal(board): return None
-    print(board)
-    bot = player(board)
-    possible_actions = actions(board)
-    action , _ = min_max_recursion(board, bot, possible_actions)
-    return action
-  
-def min_max_recursion(list_board, user, possible_actions):
+    if _count_none(board) == 9:
+        x_rand = random.randint(0, 2)
+        y_rand = random.randint(0, 2)
+        return (x_rand, y_rand)
+    else:
+        possible_actions = actions(board)
+        action , _ = minimax_recursion(board, bot, possible_actions)
+        return action
+
+def _cur_state(board, user):
+    """
+    Terminal State
+    :return 0 if Tie
+            1 if user win
+            -1 if user lose
+    """
+    score = utility(board)
+    if score != 0: 
+        return score if user == X else -score
+    if _count_none(board) == 0: return 0
+    return None
+
+def minimax_recursion(board, user, possible_actions):
+    """
+    Minmax Recursion algorithm
+    """
     # Check win or draw
-    score = utility(list_board)
-    if score != 0: return (None, score if user == X else -score) 
-    # Check draw
-    if _count_none(list_board) == 0: return (None, 0)
+    if terminal(board):
+        return (None, _cur_state(board, user))
 
     child_board = []
     for action in possible_actions:
-        result_board = result(copy.deepcopy(list_board), action)
-        child_board.append((action , min_max_recursion(result_board, 
+        result_board = result(copy.deepcopy(board), action)
+        child_board.append((action , minimax_recursion(result_board, 
                                         user, 
                                         possible_actions - {action})[1]))
-    print(child_board)
-    cur_play = player(list_board)
+        
+    print(board)
+    cur_play = player(board)
     if user == cur_play:
         return max(child_board, key=lambda ele: ele[1])
     return min(child_board, key=lambda ele: ele[1])
