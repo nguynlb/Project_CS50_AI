@@ -126,7 +126,7 @@ while True:
                 for j in range(3):
                     if (board[i][j] == ttt.EMPTY and tiles[i][j].collidepoint(mouse)):
                         board = ttt.result(board, (i, j))
-
+            
         if game_over:
             againButton = pygame.Rect(width / 3, height - 65, width / 3, 50)
             again = mediumFont.render("Play Again", True, black)

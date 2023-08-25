@@ -2,6 +2,7 @@
 Tic Tac Toe Player
 """
 import math
+import copy
 
 X = "X"
 O = "O"
@@ -21,7 +22,7 @@ def _count_none(board):
     total_none = 0
     for row in board:
         for cell in row:
-            total_none += (1 if cell == EMPTY else 0)
+            if cell is EMPTY: total_none += 1
     return total_none
 
 def player(board):
@@ -39,9 +40,7 @@ def actions(board):
     possible_actions = set()
     for i in range(3):
         for j in range(3):
-            if board[i][j] != EMPTY:
-                possible_actions.add((i, j))
-
+            if board[i][j] == EMPTY: possible_actions.add((i, j))
     return possible_actions
 
 
@@ -49,8 +48,9 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    board[action[0]][action[1]] = player(board)
-    return board
+    board_copy = list(board)
+    board_copy[action[0]][action[1]] = player(board_copy)
+    return board_copy
 
 
 def winner(board):
@@ -100,27 +100,28 @@ def minimax(board):
     Returns the optimal action for the current player on the board.
     """
     if terminal(board): return None
+    print(board)
 
-    def min_max_recursion(board, i, possible_actions):
+    tmp_board = board.copy()
+    possible_actions = actions(tmp_board)
+    action , _ = min_max_recursion(tmp_board, 0, possible_actions)
+    print(board)
+    return action
+  
+def min_max_recursion(list_board, i, possible_actions):
         # Check win or draw
-        score = utility(board)
+        score = utility(list_board)
         if score != 0: return (None, score)
         # Check draw
-        if _count_none(board) == 0: return (None, 0)
+        if _count_none(list_board) == 0: return (None, 0)
 
         child_board = []
         for action in possible_actions:
-            child_board.append((action , min_max_recursion(result(board, action), 
+            result_board = result(copy.deepcopy(list_board), action)
+            child_board.append((action , min_max_recursion(result_board, 
                                             i + 1, 
-                                            possible_actions.remove(action))[1]))
+                                            possible_actions - {action})[1]))
+        print(child_board)
         if i % 2 == 0:
             return max(child_board, key=lambda ele: ele[1])
         return min(child_board, key=lambda ele: ele[1])
-    
-    possible_actions = actions(board)
-    action , _ = min_max_recursion(board, 0, possible_actions)
-    return action
-
-            
-        
-
