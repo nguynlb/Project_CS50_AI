@@ -48,7 +48,7 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    board_copy = list(board)
+    board_copy = copy.deepcopy(board)
     board_copy[action[0]][action[1]] = player(board_copy)
     return board_copy
 
@@ -101,27 +101,26 @@ def minimax(board):
     """
     if terminal(board): return None
     print(board)
-
-    tmp_board = board.copy()
-    possible_actions = actions(tmp_board)
-    action , _ = min_max_recursion(tmp_board, 0, possible_actions)
-    print(board)
+    bot = player(board)
+    possible_actions = actions(board)
+    action , _ = min_max_recursion(board, bot, possible_actions)
     return action
   
-def min_max_recursion(list_board, i, possible_actions):
-        # Check win or draw
-        score = utility(list_board)
-        if score != 0: return (None, score)
-        # Check draw
-        if _count_none(list_board) == 0: return (None, 0)
+def min_max_recursion(list_board, user, possible_actions):
+    # Check win or draw
+    score = utility(list_board)
+    if score != 0: return (None, score if user == X else -score) 
+    # Check draw
+    if _count_none(list_board) == 0: return (None, 0)
 
-        child_board = []
-        for action in possible_actions:
-            result_board = result(copy.deepcopy(list_board), action)
-            child_board.append((action , min_max_recursion(result_board, 
-                                            i + 1, 
-                                            possible_actions - {action})[1]))
-        print(child_board)
-        if i % 2 == 0:
-            return max(child_board, key=lambda ele: ele[1])
-        return min(child_board, key=lambda ele: ele[1])
+    child_board = []
+    for action in possible_actions:
+        result_board = result(copy.deepcopy(list_board), action)
+        child_board.append((action , min_max_recursion(result_board, 
+                                        user, 
+                                        possible_actions - {action})[1]))
+    print(child_board)
+    cur_play = player(list_board)
+    if user == cur_play:
+        return max(child_board, key=lambda ele: ele[1])
+    return min(child_board, key=lambda ele: ele[1])
